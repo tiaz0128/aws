@@ -12,9 +12,9 @@ AWS 를 사용하는 3가지 방법으로 공부한다. services 폴더에 서�
     - [Boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
     - [AWS SDK Code Examples](https://github.com/awsdocs/aws-doc-sdk-examples)
 
-## 테스트를 위한 임시 자격 증명(Assume-Role)
+## 임시 자격 증명(Assume-Role)
 
-AWS 사용권한은 유출시 치명적이므로, 반드시 임시 자격 증명을 통해서 최소한의 권한을 설정 테스트를 수행한다.
+AWS 관련 정보는 유출시 치명적이므로, 반드시 임시 자격 증명(Assume-Role)을 통해서 최소한의 권한을 설정 테스트를 수행한다.
 
 ## aws-cli 설치
 
@@ -24,21 +24,49 @@ $ apt update
 $ apt install awscli
 ```
 
+## aws-cli Assume-Role
+
 ```bash
 $ aws configure
+```
 
-$ aws sts get-caller-identity
+```text
+AWS Access Key ID [None] :
+AWS Secret Access Key [None] :
+Default region name [None] : ap-northeast-2
+Default output format [None] : None
+```
 
+AWS CLI로 임시 자격 증명을 발급하여 `Credentials` 토큰을 환경 변수로 세팅
+
+- `Credentials.AccessKeyId`
+- `Credentials.SecretAccessKey`
+- `Credentials.SessionToken`
+
+```bash
 $ aws sts assume-role --role-arn <ROLE_ARN> --role-session-name <test-session>
 ```
 
-환경 변수에 설정된 AWS 보안 자격 증명을 사용하여 AWS CLI를 실행하려면, AWS CLI가 이 환경 변수를 자동으로 인식하도록 하면 됩니다
+```text
+{
+    "Credentials": {
+        "AccessKeyId": "ASIA.......",
+        "SecretAccessKey": "YwyGY8dF5.......",
+        "SessionToken": "IQoJb3JpZ2.......",
+        "Expiration": "2024-04-21T08:08:12Z"
+    },
+    "AssumedRoleUser": {
+        "AssumedRoleId": "AROA6Q5UMFQN.......",
+        "Arn": "arn:aws:......."
+    }
+}
+```
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_SESSION_TOKEN`
-
-이 환경 변수가 설정되어 있으면, AWS CLI는 이 환경 변수에 설정된 보안 자격 증명을 사용하여 AWS 서비스에 액세스.
+```bash
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export AWS_SESSION_TOKEN=
+```
 
 ```bash
 $ export ROLE_ARN=
@@ -46,7 +74,11 @@ $ export ROLE_ARN=
 $ source ./scripts/set_assume_role.sh
 ```
 
-## boto3 assume-role 이용
+```bash
+$ aws sts get-caller-identity
+```
+
+## boto3 Assume-Role
 
 - `.env` 파일에 필요한 정보를 입력
 - pytest fixture 에서 `assume-role` 로직을 통해서 동적으로 토큰을 발급 받아서 테스트를 진행
