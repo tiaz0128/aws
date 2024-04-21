@@ -27,9 +27,9 @@ def setup_user_session():
 @pytest.fixture(scope="session", name="session")
 def setup_role_credentials(aws_user_session):
     aws_account_id = os.getenv("AWS_ACCOUNT_ID")
-    role_name = os.getenv("ROLE_NAME")
+    role_arn = os.getenv("ROLE_ARN")
 
-    credentials = assume_role(aws_user_session, aws_account_id, role_name)
+    credentials = assume_role(aws_user_session, role_arn)
 
     session = boto3.Session(
         aws_access_key_id=credentials["AccessKeyId"],
@@ -46,10 +46,9 @@ def setup_role_credentials(aws_user_session):
     return session
 
 
-def assume_role(aws_user_session: Session, aws_account_id, role_name):
+def assume_role(aws_user_session: Session, role_arn):
     sts_client = aws_user_session.client("sts")
 
-    role_arn = f"arn:aws:iam::{aws_account_id}:role/{role_name}"
     response = sts_client.assume_role(
         RoleArn=role_arn, RoleSessionName="boto3-assume-session"
     )

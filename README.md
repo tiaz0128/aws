@@ -95,14 +95,13 @@ AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 REGION_NAME=ap-northeast-2
 
-ROLE_NAME=
+ROLE_ARN=
 ```
 
 ```python
-def assume_role(aws_user_session: Session, aws_account_id, role_name):
+def assume_role(aws_user_session: Session, role_arn):
     sts_client = aws_user_session.client("sts")
 
-    role_arn = f"arn:aws:iam::{aws_account_id}:role/{role_name}"
     response = sts_client.assume_role(
         RoleArn=role_arn, RoleSessionName="boto3-assume-session"
     )
