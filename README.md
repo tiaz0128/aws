@@ -1,12 +1,16 @@
 # AWS Study
 
-AWS 를 사용하는 3가지 방법으로 공부한다.
+AWS 를 사용하는 3가지 방법으로 공부한다. services 폴더에 서비스별로 공부한 내용을 정리한다.
 
 1. AWS console
+    - `console.md` 파일에 내용을 정리
 2. awscli
-    - [AWS SDK Code Examples](https://github.com/awsdocs/aws-doc-sdk-examples)
+    - `cli.md` 파일에 내용을 정리
+    - [AWS CLI Command Reference](https://docs.aws.amazon.com/cli/latest)
 3. boto3(python)
+    - `script.py` 파일에 내용을 정리
     - [Boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
+    - [AWS SDK Code Examples](https://github.com/awsdocs/aws-doc-sdk-examples)
 
 ## 테스트를 위한 임시 자격 증명(Assume-Role)
 
