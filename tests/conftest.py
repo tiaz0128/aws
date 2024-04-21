@@ -1,3 +1,4 @@
+import logging
 import pytest
 
 import os
@@ -37,6 +38,11 @@ def setup_role_credentials(aws_user_session):
         region_name=os.getenv("AWS_REGION"),
     )
 
+    logging.info("Role credentials are generated successfully")
+
+    sts = session.client("sts")
+    logging.info(sts.get_caller_identity())
+
     return session
 
 
@@ -45,7 +51,7 @@ def assume_role(aws_user_session: Session, aws_account_id, role_name):
 
     role_arn = f"arn:aws:iam::{aws_account_id}:role/{role_name}"
     response = sts_client.assume_role(
-        RoleArn=role_arn, RoleSessionName="AssumeRoleSession"
+        RoleArn=role_arn, RoleSessionName="boto3-assume-session"
     )
 
     return response["Credentials"]

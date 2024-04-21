@@ -25,7 +25,25 @@ $ apt install awscli
 ```
 
 ```bash
-$ awscli configure
+$ aws configure
+
+$ aws sts get-caller-identity
+
+$ aws sts assume-role --role-arn <ROLE_ARN> --role-session-name <test-session>
+```
+
+환경 변수에 설정된 AWS 보안 자격 증명을 사용하여 AWS CLI를 실행하려면, AWS CLI가 이 환경 변수를 자동으로 인식하도록 하면 됩니다
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_SESSION_TOKEN`
+
+이 환경 변수가 설정되어 있으면, AWS CLI는 이 환경 변수에 설정된 보안 자격 증명을 사용하여 AWS 서비스에 액세스.
+
+```bash
+$ export ROLE_ARN=
+
+$ source ./scripts/set_assume_role.sh
 ```
 
 ## boto3 assume-role 이용
@@ -34,10 +52,10 @@ $ awscli configure
 - pytest fixture 에서 `assume-role` 로직을 통해서 동적으로 토큰을 발급 받아서 테스트를 진행
 
 ```text
-AWS_ACCOUNT_ID=...
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+AWS_ACCOUNT_ID=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 REGION_NAME=ap-northeast-2
 
-ROLE_NAME=테스트에_사용할_ROLE_NAME
+ROLE_NAME=
 ```
