@@ -24,7 +24,7 @@ $ apt update
 $ apt install awscli
 ```
 
-## aws-cli Assume-Role
+## aws-cli configure
 
 ```bash
 $ aws configure
@@ -37,11 +37,7 @@ Default region name [None] : ap-northeast-2
 Default output format [None] : None
 ```
 
-AWS CLI로 임시 자격 증명을 발급하여 `Credentials` 토큰을 환경 변수로 세팅
-
-- `Credentials.AccessKeyId`
-- `Credentials.SecretAccessKey`
-- `Credentials.SessionToken`
+## aws-cli Assume-Role
 
 ```bash
 $ aws sts assume-role --role-arn <ROLE_ARN> --role-session-name <test-session>
@@ -62,11 +58,21 @@ $ aws sts assume-role --role-arn <ROLE_ARN> --role-session-name <test-session>
 }
 ```
 
+발급 받은 임시 자격 증명(Assume-Role) `Credentials` 토큰을 환경 변수로 세팅
+
+- `Credentials.AccessKeyId`
+- `Credentials.SecretAccessKey`
+- `Credentials.SessionToken`
+
 ```bash
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_SESSION_TOKEN=
 ```
+
+## aws-cli Assume-Role 스크립트
+
+위의 작업을 bash 스크립트로 작성해두고 실행하자.
 
 ```bash
 $ export ROLE_ARN=
@@ -81,7 +87,7 @@ $ aws sts get-caller-identity
 ## boto3 Assume-Role
 
 - `.env` 파일에 필요한 정보를 입력
-- pytest fixture 에서 `assume-role` 로직을 통해서 동적으로 토큰을 발급 받아서 테스트를 진행
+- pytest fixture 로 임시 자격 증명(Assume-Role) `Credentials` 토큰을 발급 받아서 테스트
 
 ```text
 AWS_ACCOUNT_ID=
@@ -90,4 +96,16 @@ AWS_SECRET_ACCESS_KEY=
 REGION_NAME=ap-northeast-2
 
 ROLE_NAME=
+```
+
+```python
+def assume_role(aws_user_session: Session, aws_account_id, role_name):
+    sts_client = aws_user_session.client("sts")
+
+    role_arn = f"arn:aws:iam::{aws_account_id}:role/{role_name}"
+    response = sts_client.assume_role(
+        RoleArn=role_arn, RoleSessionName="boto3-assume-session"
+    )
+
+    return response["Credentials"]
 ```
