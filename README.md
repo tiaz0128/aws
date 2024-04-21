@@ -21,7 +21,7 @@ AWS 관련 정보는 유출시 치명적이므로, 반드시 임시 자격 증�
 ```bash
 $ apt update
 
-$ apt install awscli
+$ apt install awscli jq
 ```
 
 ## aws-cli configure
